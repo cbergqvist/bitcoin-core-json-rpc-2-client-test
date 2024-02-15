@@ -1,0 +1,9 @@
+[package]
+name = "bitcoin-core-json-rpc-2-client-test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+base64_light = "0.1.5"
+jsonrpsee = { version = "0.22.0", features = ["http-client"] }
+tokio = { version = "1.36.0", features = ["macros", "rt-multi-thread"] }
