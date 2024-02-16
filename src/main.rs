@@ -1,7 +1,12 @@
-use jsonrpsee::core::client::{ClientT, Error};
-use jsonrpsee::core::JsonValue;
-use jsonrpsee::http_client::{HeaderMap, HeaderValue, HttpClientBuilder};
-use jsonrpsee::rpc_params;
+use jsonrpsee::{
+    core::{
+        client::{ClientT, Error},
+        params::ObjectParams,
+        JsonValue,
+    },
+    http_client::{HeaderMap, HeaderValue, HttpClientBuilder},
+    rpc_params,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -20,12 +25,18 @@ async fn main() -> Result<(), Error> {
     let response_hash = client
         .request::<String, _>("getblockhash", rpc_params![0])
         .await?;
-    println!("Genesis block hash: {}", response_hash);
+    println!(
+        "Genesis block hash with positional params array: {}",
+        response_hash
+    );
 
-    let response_block = client
-        .request::<JsonValue, _>("getblock", rpc_params![response_hash, 1])
-        .await?;
-    println!("Genesis block data: {:#?}", response_block);
+    let mut params = ObjectParams::new();
+    params.insert("blockhash", response_hash)?;
+    let response_block = client.request::<JsonValue, _>("getblock", params).await?;
+    println!(
+        "Genesis block data with named params object: {:#?}",
+        response_block
+    );
 
     Ok(())
 }
